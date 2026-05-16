@@ -5,7 +5,9 @@ import { MapView }       from './components/MapView';
 import { CollectorPanel } from './components/CollectorPanel';
 import { ValidatorPanel } from './components/ValidatorPanel';
 import { HowItWorks }    from './components/HowItWorks';
+import { OnboardingTour } from './components/OnboardingTour';
 import { WalletState, UserRole, ContainerLocation } from './types';
+import { generateSimulatedLocations } from './utils/locationSimulator';
 import './styles/global.css';
 
 type ActiveTab = 'map' | 'collector' | 'validator';
@@ -25,32 +27,21 @@ function useReveal() {
   return ref;
 }
 
-const LearnGuide = ({ onClose }: { onClose: () => void }) => (
-  <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
-    <div style={{ background: 'var(--white)', padding: 30, borderRadius: 16, maxWidth: 400, boxShadow: 'var(--shadow-3)', textAlign: 'center' }}>
-      <h2 style={{ marginBottom: 15, fontSize: 22, color: 'var(--text)' }}>MONECO'ya Hoş Geldiniz</h2>
-      <p style={{ marginBottom: 20, color: 'var(--text-2)', fontSize: 14 }}>Bu platform, çevreyi korurken token kazanmanızı sağlar. Sağ üst köşeden cüzdanınızı bağlayarak Toplayıcı veya Doğrulayıcı olarak başlayabilirsiniz.</p>
-      <button className="btn btn-primary" onClick={onClose} style={{ width: '100%', justifyContent: 'center' }}>Anladım, Başla</button>
-    </div>
-  </div>
-);
-
 const App: React.FC = () => {
   const [walletState, setWalletState] = useState<WalletState>({ address: null, isConnected: false, chainId: null });
   const [userRole,    setUserRole]    = useState<UserRole | null>(null);
   const [selectedLoc, setSelectedLoc] = useState<ContainerLocation | null>(null);
   const [activeTab,   setActiveTab]   = useState<ActiveTab>('map');
   const [showGuide,   setShowGuide]   = useState(false);
+  const [locations,   setLocations]   = useState<ContainerLocation[]>(() => generateSimulatedLocations(150));
 
   useEffect(() => {
-    const guideSeen = localStorage.getItem('moneco_guide_seen');
-    if (!guideSeen) {
-      setShowGuide(true);
-    }
+    const seen = localStorage.getItem('moneco_onboarding_done');
+    if (!seen) setShowGuide(true);
   }, []);
 
   const closeGuide = () => {
-    localStorage.setItem('moneco_guide_seen', 'true');
+    localStorage.setItem('moneco_onboarding_done', 'true');
     setShowGuide(false);
   };
 
@@ -64,7 +55,7 @@ const App: React.FC = () => {
 
   return (
     <div className="app-root">
-      {showGuide && <LearnGuide onClose={closeGuide} />}
+      {showGuide && <OnboardingTour onClose={closeGuide} />}
       {/* ── Header ──────────────────────────────────────────── */}
       <header className="app-header">
         <div className="header-brand">
@@ -86,7 +77,7 @@ const App: React.FC = () => {
         /* ── Bağlı: harita tam ekran, paneller float ─────── */
         <div className="app-body">
           <div className="map-full">
-            <MapView onLocationSelect={handleLocationSelect} selectedLocation={selectedLoc} />
+            <MapView locations={locations} onLocationSelect={handleLocationSelect} selectedLocation={selectedLoc} />
           </div>
 
           <aside className="floating-sidebar">
@@ -109,7 +100,7 @@ const App: React.FC = () => {
                     className={`tab-btn ${activeTab === 'collector' ? 'active' : ''}`}
                     onClick={() => setActiveTab('collector')}
                   >
-                    Fotoğraf Yükle
+                    Fotoğraf Gönder
                   </button>
                 )}
                 {userRole === 'validator' && (
@@ -128,7 +119,21 @@ const App: React.FC = () => {
 
           {activeTab === 'collector' && userRole === 'collector' && (
             <div className="floating-panel">
-              <CollectorPanel selectedLocation={selectedLoc} walletAddress={walletState.address} />
+              <CollectorPanel 
+                selectedLocation={selectedLoc} 
+                walletAddress={walletState.address}
+                onPhotoUploaded={(photoUrl, pollutionLevel) => {
+                  if (selectedLoc) {
+                    // pollutionLevel: 0-30=temiz(yeşil), 31-70=orta(turuncu), 71-100=kirli(kırmızı)
+                    const newColor = pollutionLevel > 70 ? 'red' : pollutionLevel > 30 ? 'orange' : 'green';
+                    setLocations(locs => locs.map(l =>
+                      l.id === selectedLoc.id
+                        ? { ...l, photos: [...(l.photos || []), photoUrl], markerColor: newColor }
+                        : l
+                    ));
+                  }
+                }}
+              />
             </div>
           )}
           {activeTab === 'validator' && userRole === 'validator' && (
@@ -149,9 +154,9 @@ const App: React.FC = () => {
             </div>
             <h1>Çevreyi Belgele,<br />Token Kazan</h1>
             <p className="hero-sub">
-              Çöp konteynerleri ve atık alanlarını fotoğraflayın.
+              Bulunduğunuz noktadan çevrenizin fotoğrafını çekin.
               <br />
-              Merkeziyetsiz <strong>Proof of Image</strong> protokolüyle ödüllendirilip seviye atlayın.
+              AI gerçekliği doğrular, kirlilik seviyesini belirler. Merkeziyetsiz <strong>Proof of Image</strong> protokolüyle ödüllendirilip seviye atlayın.
             </p>
             <WalletConnect walletState={walletState} setWalletState={setWalletState} />
           </div>

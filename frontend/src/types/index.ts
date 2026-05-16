@@ -29,6 +29,7 @@ export interface ContainerLocation {
   difficulty: number;    // 1-5
   markerColor: MarkerColor;
   poolId?: string;       // on-chain pool ID (varsa)
+  photos?: string[];     // Doğrulanan fotoğrafların URL'leri
 }
 
 export interface ImagePoolData {

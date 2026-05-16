@@ -82,69 +82,196 @@
       color: var(--accent);
       line-height: 1.9;
     }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+    th {
+      text-align: left;
+      color: var(--accent);
+      font-weight: 500;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    td {
+      color: var(--text-muted);
+      padding: 8px 12px;
+      border-bottom: 1px solid #0d0f1e;
+      font-size: 0.95rem;
+    }
+    .flow {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 24px 0;
+    }
+    .flow-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .flow-line {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .flow-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      margin-top: 6px;
+    }
+    .flow-connector {
+      width: 2px;
+      flex: 1;
+      min-height: 28px;
+      background: var(--border);
+      margin: 2px 0;
+    }
+    .flow-label {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      padding-bottom: 20px;
+    }
+    .flow-label strong {
+      color: var(--text);
+    }
   </style>
 </head>
 <body>
   <header>
-    <div class="subtitle">Proof of Image Protocol</div>
+    <div class="subtitle">Proof of Image Protocol · Monad Network</div>
     <h1>MONECO Dokümantasyonu</h1>
-    <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">Merkeziyetsizliğin doğacı manifestosu. Çevreyi koruyanları ödüllendiren, ekolojiye destek olan Web3 kültürü.</p>
+    <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">
+      Çevreyi belgele, AI ve topluluk doğrulasın, $MONECO kazan.
+    </p>
   </header>
-  
-  <main>
-    <h2>1. Sisteme Genel Bakış</h2>
-    <p>MONECO, Monad ağı üzerinde çalışan ve kendi tokeni olan <span class="highlight">$MONECO (100 Milyon Arz)</span> ile çevreyi koruyanları ödüllendiren bir sistemdir. Harita üzerinde (Mapbox GL JS kullanılarak) işaretlenmiş çöp konteynerlarının durumunu fotoğraflayan <strong>Toplayıcılar</strong> ve bu fotoğrafları onaylayan <strong>Doğrulayıcılar</strong>dan oluşur.</p>
 
-    <h2>2. Roller ve Sorumluluklar</h2>
-    
+  <main>
+
+    <h2>1. Sisteme Genel Bakış</h2>
+    <p>
+      MONECO, <span class="highlight">Monad blok zinciri</span> üzerinde çalışan bir DePIN (Merkeziyetsiz Fiziksel Altyapı) protokolüdür.
+      Haritadaki konumlara gidip çevre fotoğrafı çeken <strong>Toplayıcılar</strong> ve bu fotoğrafların gerçekliğini onaylayan
+      <strong>Doğrulayıcılar</strong>dan oluşur. Her iki rol de başarılı katılım karşılığında <span class="highlight">$MONECO</span> token kazanır.
+    </p>
+
+    <h2>2. Onay Akışı</h2>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
+        <div class="flow-label"><strong>Toplayıcı fotoğraf gönderir</strong> — Haritadan konum seçer, fotoğraf hash'ini ve konum bilgisini on-chain kaydeder.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
+        <div class="flow-label"><strong>AI Oracle ön kontrolü</strong> — Yapay zeka fotoğrafın sahte (AI üretimi vb.) olup olmadığını kontrol eder. Sahte ise toplayıcı stake'i yanar, havuz reddedilir.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
+        <div class="flow-label"><strong>Validator oylaması</strong> — AI'dan geçen fotoğraf için doğrulayıcılar oy kullanır. En az <span class="highlight">5 oy</span> dolduğunda havuz sonuçlandırılır.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
+        <div class="flow-label"><strong>Sonuçlandırma</strong> — Oyların <span class="highlight">%60 veya fazlası</span> onay ise havuz kabul edilir; aksi hâlde reddedilir ve toplayıcı slash edilir.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-line"><div class="flow-dot"></div></div>
+        <div class="flow-label"><strong>Ödüller dağıtılır</strong> — Havuz ödülünün <span class="highlight">%70'i</span> toplayıcı(lara), <span class="highlight">%30'u</span> doğru oy kullanan doğrulayıcılara aktarılır.</div>
+      </div>
+    </div>
+
+    <h2>3. Roller</h2>
+
     <h3>Toplayıcı (Collector)</h3>
     <ul>
-      <li>Toplayıcı olmak için sisteme <span class="highlight">1000 $MONECO stake</span> edilmesi zorunludur.</li>
-      <li>Harita üzerindeki noktalara giderek güncel durumu fotoğraflar ve sisteme yükler.</li>
-      <li>Eğer yüklenen fotoğraf geçerli ise (gerçek ve o konumda çekilmişse), açılan <strong>Image Pool (Fotoğraf Havuzu)</strong> üzerinden ödül kazanır.</li>
-      <li>Eğer fotoğraf sahte (AI ile üretilmiş vb.) ise veya hile tespit edilirse, stake ettiği tokenlar <span class="highlight">yanar (slash)</span>.</li>
+      <li>Sisteme katılmak için <span class="highlight">1.000 $MONECO stake</span> edilmesi zorunludur.</li>
+      <li>Haritadan bir konum seçip fotoğraf çeker ve on-chain gönderir.</li>
+      <li>Fotoğraf onaylanırsa havuz ödülünden pay alır; seviyesi artar.</li>
+      <li>Fotoğraf sahte ya da topluluk tarafından reddedilirse stake'i <span class="highlight">yanar (slash → token yakma)</span>.</li>
     </ul>
 
     <h3>Doğrulayıcı (Validator)</h3>
     <ul>
-      <li>Havuzdaki (Image Pool) fotoğrafların gerçekliğini oylar. (Gerçek mi, Sahte mi?)</li>
-      <li>Doğrulayıcıların kararı ve AI araçlarının ortak teyidi ile sonuç belirlenir.</li>
-      <li>Eğer fotoğraf gerçek çıkar ve doğrulayıcı doğru oy verdiyse ödül kazanır.</li>
-      <li>Eğer doğrulayıcılar rastgele veya sürekli olarak yanlış oy verirse <span class="highlight">protokolden kalıcı olarak atılırlar (ban)</span>.</li>
+      <li>Kayıt için stake gerekmez, ücretsizdir.</li>
+      <li>AI kontrolünden geçmiş fotoğrafları "Gerçek" veya "Sahte" olarak oylar.</li>
+      <li>Doğru oy kullananlar havuz ödülünün %30'undan pay alır ve seviye kazanır.</li>
+      <li>Kümülatif <span class="highlight">20 yanlış oy</span> sonrası hesap kalıcı olarak ban'lanır.</li>
+      <li>Kendi fotoğrafı için oy kullanılamaz.</li>
     </ul>
 
-    <h2>3. Ödül Mekanizması ve Havuz Sistemi</h2>
-    <p>Fotoğraf yükleme işlemi sonrasında sistemde bulunan bir <strong>Agent</strong> ön kontrol yapar. Geçerli ise o bölge (örneğin Çanakkale Biga Belediyesi konteynerleri) için bir ödül havuzu açılır.</p>
+    <h2>4. Ödül Mekanizması</h2>
+
+    <h3>Zorluk → Havuz Ödülü</h3>
+    <p>Toplayıcı fotoğrafı gönderirken 1–5 arası zorluk derecesi seçer. Zorluk ne kadar yüksekse havuzun temel ödülü o kadar büyüktür.</p>
+    <table>
+      <tr><th>Zorluk</th><th>Havuz Ödülü</th><th>Açıklama</th></tr>
+      <tr><td>1</td><td>10 $MONECO</td><td>Şehir merkezi, erişimi kolay</td></tr>
+      <tr><td>2</td><td>25 $MONECO</td><td>Kolay erişimli kırsal</td></tr>
+      <tr><td>3</td><td>60 $MONECO</td><td>Orta mesafe</td></tr>
+      <tr><td>4</td><td>150 $MONECO</td><td>Uzak bölge</td></tr>
+      <tr><td>5</td><td>400 $MONECO</td><td>İzbe, erişimi çok zor</td></tr>
+    </table>
+
+    <h3>Ödül Dağılımı</h3>
     <ul>
-      <li>Havuzun ödülü bölgenin zorluğuna göre değişir. Örneğin havuzda <strong>100 MONECO</strong> varsa:</li>
-      <li>Eğer geçerli fotoğrafı sadece 1 kişi yüklerse 100 MONECO'nun tamamını alır.</li>
-      <li>Eğer 100 kişi yüklerse kişi başı 1 MONECO düşer.</li>
-      <li>Bu sistem, gidilmesi zor (izbe) ve verisi az bölgelerde fotoğraf çekilmesini teşvik eder.</li>
-    </ul>
-    
-    <p>Haritada bölgelerin renk kodları (veriye göre):</p>
-    <ul>
-      <li><span style="color: #ff4444;">Kırmızı:</span> En çok fotoğraf çekilen bölgeler (düşük ödül).</li>
-      <li><span style="color: #ff9800;">Turuncu:</span> Ortalama bölgeler.</li>
-      <li><span style="color: #4CAF50;">Yeşil:</span> İzbe, en az fotoğraf çekilen yerler (yüksek ödül).</li>
+      <li>Havuz ödülünün <span class="highlight">%70'i</span> toplayıcılara eşit bölünür.</li>
+      <li><span class="highlight">%30'u</span> doğru oy kullanan doğrulayıcılara eşit bölünür.</li>
+      <li>Aynı havuza birden fazla toplayıcı fotoğraf yükleyebilir; bu durumda %70'lik pay toplayıcı sayısına bölünür.</li>
     </ul>
 
-    <h2>4. Seviye (Level) Sistemi</h2>
-    <p>Protokol, kullanıcıların performansına göre onlara 1'den 10'a kadar seviye verir. Doğru cevaplar/geçerli işlemler yaptıkça seviye artar:</p>
+    <h2>5. Harita Renk Kodları</h2>
+    <p>Haritadaki işaretçi renkleri bölgenin <strong>kirlilik seviyesini</strong> gösterir; fotoğraf çekildikten sonra AI analizi bu rengi günceller.</p>
+    <table>
+      <tr><th>Renk</th><th>Kirlilik Skoru</th><th>Anlam</th></tr>
+      <tr><td><span style="color:#4CAF50;">● Yeşil</span></td><td>0 – 30</td><td>Temiz çevre</td></tr>
+      <tr><td><span style="color:#ff9800;">● Turuncu</span></td><td>31 – 70</td><td>Orta kirlilik</td></tr>
+      <tr><td><span style="color:#ff4444;">● Kırmızı</span></td><td>71 – 100</td><td>Kirli çevre</td></tr>
+    </table>
+
+    <h2>6. Seviye (Level) Sistemi</h2>
+    <p>
+      Toplayıcı ve doğrulayıcıların doğru işlem sayısı arttıkça seviyeleri yükselir (1–10).
+      Her seviye <span class="highlight">+%5 ödül çarpanı</span> ekler.
+    </p>
     <div class="code-block">
       Seviye Atlama Eşikleri (Doğru İşlem Sayısı):<br>
-      - 50 &nbsp;-> Seviye 2<br>
-      - 100 -> Seviye 3<br>
-      - 200 -> Seviye 4<br>
-      - 400 -> Seviye 5<br>
-      - 800 -> Seviye 6<br>
-      - 1600 -> Seviye 7<br>
-      - 3200 -> Seviye 8 ...
+      Seviye 1 → 2 : &nbsp;&nbsp;&nbsp;50 doğru işlem<br>
+      Seviye 2 → 3 : &nbsp;&nbsp;100<br>
+      Seviye 3 → 4 : &nbsp;&nbsp;200<br>
+      Seviye 4 → 5 : &nbsp;&nbsp;400<br>
+      Seviye 5 → 6 : &nbsp;&nbsp;800<br>
+      Seviye 6 → 7 : &nbsp;1.600<br>
+      Seviye 7 → 8 : &nbsp;3.200<br>
+      Seviye 8 → 9 : &nbsp;6.400<br>
+      Seviye 9 → 10: 12.800<br><br>
+      Ödül çarpanı: Seviye × 5% bonus<br>
+      Örnek — Seviye 4: baz ödül × 1.15
     </div>
-    <p>Her seviye artışında, kazanılan <strong>ödül oranları doğru orantılı olarak %5 artar</strong>.</p>
 
-    <h2>5. Felsefe ve Manifestomuz</h2>
-    <p>Bu proje, hem teknolojik hem de etik anlamda bir kültür oluşturmayı amaçlar. Ekolojiye destek olmak, çevre koruma eylemlerini oyunlaştırarak teşvik etmek ve bunu tamamen merkeziyetsiz bir altyapı ile sağlamak MONECO'nun temelidir. Bu, <span class="highlight">merkeziyetsizliğin doğacı manifestosudur.</span></p>
+    <h2>7. $MONECO Tokenomics</h2>
+    <table>
+      <tr><th>Parametre</th><th>Değer</th></tr>
+      <tr><td>Toplam Arz</td><td>100.000.000 $MONECO</td></tr>
+      <tr><td>Ağ</td><td>Monad</td></tr>
+      <tr><td>Token Standardı</td><td>ERC-20</td></tr>
+      <tr><td>Toplayıcı Stake</td><td>1.000 $MONECO</td></tr>
+      <tr><td>Slash Mekanizması</td><td>Stake tamamen yanar (deflationary)</td></tr>
+      <tr><td>Validator Ban Eşiği</td><td>20 yanlış oy</td></tr>
+      <tr><td>Havuz Onay Koşulu</td><td>Min. 5 oy, ≥%60 onay</td></tr>
+    </table>
+
+    <h2>8. Belediye / Kurumsal Havuzlar</h2>
+    <p>
+      Belediyeler ve sponsorlar, protokole özel ödüllü görev havuzları açabilir.
+      Bu havuzlar haritada görünür hâle gelir ve toplayıcılar o konuma giderek fotoğraf çekip ödül kazanabilir.
+      Örnek: Çanakkale Biga Belediyesi → zorluk 4 konuma 150 $MONECO ödüllü havuz açar.
+    </p>
+
   </main>
 </body>
 </html>
