@@ -19,6 +19,7 @@ export const CollectorPanel: React.FC<Props> = ({ selectedLocation }) => {
   const [poolId,     setPoolId]     = useState<string | null>(null);
   const [errorMsg,   setErrorMsg]   = useState<string | null>(null);
   const [aiProgress, setAiProgress] = useState(0);
+  const [fullness,   setFullness]   = useState<number>(50); // Varsayılan %50
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,7 +39,7 @@ export const CollectorPanel: React.FC<Props> = ({ selectedLocation }) => {
     try {
       const id = await submitImage(
         selectedLocation.latitude, selectedLocation.longitude,
-        selectedLocation.locationName, selectedLocation.difficulty, imageFile
+        selectedLocation.locationName, selectedLocation.difficulty, fullness, imageFile
       );
       setPoolId(id);
       simulateAICheck();
@@ -64,7 +65,7 @@ export const CollectorPanel: React.FC<Props> = ({ selectedLocation }) => {
 
   const handleReset = () => {
     setStep('select'); setImageFile(null); setPreviewUrl(null);
-    setPoolId(null); setErrorMsg(null); setAiProgress(0);
+    setPoolId(null); setErrorMsg(null); setAiProgress(0); setFullness(50);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -120,7 +121,27 @@ export const CollectorPanel: React.FC<Props> = ({ selectedLocation }) => {
                 <span>{imageFile?.name}</span>
                 <span>{((imageFile?.size ?? 0) / 1024).toFixed(0)} KB</span>
               </div>
-              <div className="preview-actions">
+              <div className="fullness-selector" style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <label htmlFor="fullness-slider" style={{ fontSize: '0.9rem', fontWeight: 500 }}>
+                  Doluluk Oranı: %{fullness}
+                </label>
+                <input 
+                  id="fullness-slider"
+                  type="range" 
+                  min="0" 
+                  max="100" 
+                  step="10"
+                  value={fullness} 
+                  onChange={(e) => setFullness(Number(e.target.value))} 
+                  style={{ width: '100%', cursor: 'pointer' }}
+                />
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                  <span>Boş</span>
+                  <span>Yarı Dolu</span>
+                  <span>Taşıyor</span>
+                </div>
+              </div>
+              <div className="preview-actions" style={{ marginTop: '1rem' }}>
                 <button className="btn btn-secondary" onClick={handleReset}>Yeniden Seç</button>
                 <button className="btn btn-primary"   onClick={handleUpload}>Havuza Yükle</button>
               </div>

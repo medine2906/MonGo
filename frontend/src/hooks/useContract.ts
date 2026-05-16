@@ -241,6 +241,7 @@ export async function submitImage(
   longitude:    number,
   locationName: string,
   difficulty:   number,
+  fullness:     number,
   _imageFile:   File
 ): Promise<string> {
   const fakeHash = `0x${Math.random().toString(16).slice(2).padStart(64, '0')}`;

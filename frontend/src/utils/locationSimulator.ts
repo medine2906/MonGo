@@ -82,7 +82,6 @@ export function generateSimulatedLocations(count: number): ContainerLocation[] {
   return locations;
 }
 
-// Demo fotoğraf havuzu verisi üretir (Doğrulayıcı paneli için)
 export const DEMO_PENDING_POOLS = [
   {
     poolId:      '0xabc...001',
@@ -96,7 +95,8 @@ export const DEMO_PENDING_POOLS = [
     status:      'ValidatorVote' as const,
     difficulty:  2,
     submittedAt: Date.now() - 3600_000,
-    ipfsUrl:     'https://picsum.photos/seed/trash1/400/300',
+    ipfsUrl:     '/trash1.png',
+    fullness:    100,
   },
   {
     poolId:      '0xabc...002',
@@ -110,7 +110,8 @@ export const DEMO_PENDING_POOLS = [
     status:      'ValidatorVote' as const,
     difficulty:  4,
     submittedAt: Date.now() - 7200_000,
-    ipfsUrl:     'https://picsum.photos/seed/trash2/400/300',
+    ipfsUrl:     '/trash2.png',
+    fullness:    50,
   },
   {
     poolId:      '0xabc...003',
@@ -124,6 +125,7 @@ export const DEMO_PENDING_POOLS = [
     status:      'ValidatorVote' as const,
     difficulty:  5,
     submittedAt: Date.now() - 1800_000,
-    ipfsUrl:     'https://picsum.photos/seed/trash3/400/300',
+    ipfsUrl:     '/trash3.png',
+    fullness:    10,
   },
 ];

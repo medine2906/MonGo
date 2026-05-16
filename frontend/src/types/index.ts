@@ -44,6 +44,7 @@ export interface ImagePoolData {
   difficulty: number;
   submittedAt: number;
   ipfsUrl?: string;      // simülasyon için
+  fullness?: number;     // doluluk oranı 0-100
 }
 
 export interface ValidatorVotePayload {
