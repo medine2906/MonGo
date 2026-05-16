@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p \"c:\\\\Users\\\\VICTUS\\\\OneDrive\\\\Documents\\\\Masaüstü\\\\MonGo\\\\contracts\" \"c:\\\\Users\\\\VICTUS\\\\OneDrive\\\\Documents\\\\Masaüstü\\\\MonGo\\\\frontend\\\\src\\\\components\" \"c:\\\\Users\\\\VICTUS\\\\OneDrive\\\\Documents\\\\Masaüstü\\\\MonGo\\\\frontend\\\\src\\\\hooks\" \"c:\\\\Users\\\\VICTUS\\\\OneDrive\\\\Documents\\\\Masaüstü\\\\MonGo\\\\frontend\\\\src\\\\types\" \"c:\\\\Users\\\\VICTUS\\\\OneDrive\\\\Documents\\\\Masaüstü\\\\MonGo\\\\frontend\\\\src\\\\constants\" \"c:\\\\Users\\\\VICTUS\\\\OneDrive\\\\Documents\\\\Masaüstü\\\\MonGo\\\\frontend\\\\src\\\\utils\" \"c:\\\\Users\\\\VICTUS\\\\OneDrive\\\\Documents\\\\Masaüstü\\\\MonGo\\\\frontend\\\\src\\\\styles\")",
+      "Bash(npm run *)",
+      "Bash(npm uninstall *)",
+      "Bash(npx vite *)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\VICTUS\\OneDrive\\Documents\\Masaüstü\\MonGo"
+    ]
+  }
+}
