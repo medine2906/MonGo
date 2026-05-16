@@ -25,21 +25,46 @@ function useReveal() {
   return ref;
 }
 
+const LearnGuide = ({ onClose }: { onClose: () => void }) => (
+  <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+    <div style={{ background: 'var(--white)', padding: 30, borderRadius: 16, maxWidth: 400, boxShadow: 'var(--shadow-3)', textAlign: 'center' }}>
+      <h2 style={{ marginBottom: 15, fontSize: 22, color: 'var(--text)' }}>MONECO'ya Hoş Geldiniz</h2>
+      <p style={{ marginBottom: 20, color: 'var(--text-2)', fontSize: 14 }}>Bu platform, çevreyi korurken token kazanmanızı sağlar. Sağ üst köşeden cüzdanınızı bağlayarak Toplayıcı veya Doğrulayıcı olarak başlayabilirsiniz.</p>
+      <button className="btn btn-primary" onClick={onClose} style={{ width: '100%', justifyContent: 'center' }}>Anladım, Başla</button>
+    </div>
+  </div>
+);
+
 const App: React.FC = () => {
   const [walletState, setWalletState] = useState<WalletState>({ address: null, isConnected: false, chainId: null });
   const [userRole,    setUserRole]    = useState<UserRole | null>(null);
   const [selectedLoc, setSelectedLoc] = useState<ContainerLocation | null>(null);
   const [activeTab,   setActiveTab]   = useState<ActiveTab>('map');
+  const [showGuide,   setShowGuide]   = useState(false);
+
+  useEffect(() => {
+    const guideSeen = localStorage.getItem('moneco_guide_seen');
+    if (!guideSeen) {
+      setShowGuide(true);
+    }
+  }, []);
+
+  const closeGuide = () => {
+    localStorage.setItem('moneco_guide_seen', 'true');
+    setShowGuide(false);
+  };
 
   const tokenomicsRef = useReveal();
 
   const handleLocationSelect = (loc: ContainerLocation) => {
     setSelectedLoc(loc);
     if (userRole === 'collector') setActiveTab('collector');
+    else if (userRole === 'validator') setActiveTab('validator');
   };
 
   return (
     <div className="app-root">
+      {showGuide && <LearnGuide onClose={closeGuide} />}
       {/* ── Header ──────────────────────────────────────────── */}
       <header className="app-header">
         <div className="header-brand">
@@ -52,8 +77,7 @@ const App: React.FC = () => {
           </div>
         </div>
         <nav className="header-nav">
-          <a href="https://docs.monad.xyz" target="_blank" rel="noreferrer">Docs</a>
-          <a href="https://monad.xyz"       target="_blank" rel="noreferrer">Monad</a>
+          <a href="/docs.html" target="_blank" rel="noreferrer">Docs</a>
         </nav>
         <WalletConnect walletState={walletState} setWalletState={setWalletState} />
       </header>
@@ -78,7 +102,6 @@ const App: React.FC = () => {
                   className={`tab-btn ${activeTab === 'map' ? 'active' : ''}`}
                   onClick={() => setActiveTab('map')}
                 >
-                  <span className="tab-btn-dot" />
                   Harita
                 </button>
                 {userRole === 'collector' && (
@@ -86,9 +109,7 @@ const App: React.FC = () => {
                     className={`tab-btn ${activeTab === 'collector' ? 'active' : ''}`}
                     onClick={() => setActiveTab('collector')}
                   >
-                    <span className="tab-btn-dot" />
                     Fotoğraf Yükle
-                    {selectedLoc && <span className="tab-dot" />}
                   </button>
                 )}
                 {userRole === 'validator' && (
@@ -96,35 +117,13 @@ const App: React.FC = () => {
                     className={`tab-btn ${activeTab === 'validator' ? 'active' : ''}`}
                     onClick={() => setActiveTab('validator')}
                   >
-                    <span className="tab-btn-dot" />
                     Doğrula
-                    <span className="tab-badge">3</span>
                   </button>
                 )}
               </nav>
             )}
 
-            <div className="sidebar-tip">
-              <h4>Nasıl Çalışır?</h4>
-              {userRole === 'collector' && (
-                <ol>
-                  <li>Yeşil noktayı seçin (yüksek ödül)</li>
-                  <li>Yerinde fotoğraf çekin</li>
-                  <li>Fotoğraf Yükle ile gönderin</li>
-                  <li>AI + doğrulayıcı onayı bekleyin</li>
-                  <li>Ödülünüzü kazanın</li>
-                </ol>
-              )}
-              {userRole === 'validator' && (
-                <ol>
-                  <li>Doğrula panelini açın</li>
-                  <li>Fotoğrafı dikkatlice inceleyin</li>
-                  <li>Gerçek/Sahte oyunu kullanın</li>
-                  <li>Çoğunlukla doğru oy → ödül</li>
-                </ol>
-              )}
-              {!userRole && <p>Sol panelden kayıt olun.</p>}
-            </div>
+
           </aside>
 
           {activeTab === 'collector' && userRole === 'collector' && (
@@ -155,16 +154,12 @@ const App: React.FC = () => {
               Merkeziyetsiz <strong>Proof of Image</strong> protokolüyle ödüllendirilip seviye atlayın.
             </p>
             <WalletConnect walletState={walletState} setWalletState={setWalletState} />
-            <div className="scroll-hint">
-              <span>Keşfet</span>
-              <div className="scroll-arrow" />
-            </div>
           </div>
 
           {/* Hero → HowItWorks geçiş */}
           <div className="section-wave">
             <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="#07070f" />
+              <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="var(--white)" />
             </svg>
           </div>
 
@@ -172,9 +167,9 @@ const App: React.FC = () => {
           <HowItWorks />
 
           {/* HowItWorks → Tokenomics geçiş */}
-          <div style={{ lineHeight: 0, background: '#07070f' }}>
+          <div style={{ lineHeight: 0, background: 'var(--white)' }}>
             <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: 60, display: 'block' }}>
-              <path d="M0,40 C360,0 1080,80 1440,40 L1440,80 L0,80 Z" fill="var(--white)" />
+              <path d="M0,40 C360,0 1080,80 1440,40 L1440,80 L0,80 Z" fill="var(--bg-1)" />
             </svg>
           </div>
 

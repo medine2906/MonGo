@@ -79,8 +79,7 @@ export const ValidatorPanel: React.FC<Props> = (_props) => {
   return (
     <div className="panel validator-panel">
       <div className="panel-header">
-        <h2>✅ Doğrulayıcı Paneli</h2>
-        <p>Havuzdaki fotoğrafları inceleyin ve oyunuzu kullanın</p>
+        <h2>Doğrulayıcı Paneli</h2>
       </div>
 
       {/* Filtreler */}
@@ -91,10 +90,10 @@ export const ValidatorPanel: React.FC<Props> = (_props) => {
             className={`filter-btn ${filter === f ? 'active' : ''}`}
             onClick={() => setFilter(f)}
           >
-            {f === 'all'    && 'Tümü'}
-            {f === 'high'   && '⭐⭐⭐⭐⭐ Yüksek Ödül'}
-            {f === 'medium' && '⭐⭐⭐ Orta'}
-            {f === 'low'    && '⭐ Düşük'}
+          {f === 'all'    && 'Tümü'}
+            {f === 'high'   && 'Yüksek Ödül'}
+            {f === 'medium' && 'Orta'}
+            {f === 'low'    && 'Düşük'}
           </button>
         ))}
         <span className="pool-count">{filteredPools.length} havuz bekliyor</span>
@@ -104,8 +103,7 @@ export const ValidatorPanel: React.FC<Props> = (_props) => {
       <div className="pool-list">
         {filteredPools.length === 0 && (
           <div className="empty-state">
-            <span>🎉</span>
-            <p>Tüm havuzlar değerlendirildi!</p>
+            <p>Tüm havuzlar değerlendirildi.</p>
           </div>
         )}
 
@@ -129,7 +127,7 @@ export const ValidatorPanel: React.FC<Props> = (_props) => {
                     className="difficulty-badge"
                     style={{ background: DIFFICULTY_COLORS[pool.difficulty] }}
                   >
-                    {'⭐'.repeat(pool.difficulty)}
+                    {pool.difficulty}/5
                   </span>
                   <div>
                     <strong>{pool.locationName}</strong>
@@ -155,24 +153,21 @@ export const ValidatorPanel: React.FC<Props> = (_props) => {
                         className="pool-image"
                         loading="lazy"
                       />
-                      <div className="image-overlay">
-                        <span>🔍 Fotoğrafı inceleyin</span>
-                      </div>
                     </div>
                   )}
 
                   {/* Metadata */}
                   <div className="pool-metadata">
                     <div className="meta-row">
-                      <span>🏠 Toplayıcı</span>
+                      <span>Toplayıcı</span>
                       <code>{pool.collector.slice(0, 10)}...</code>
                     </div>
                     <div className="meta-row">
-                      <span>🔑 Pool ID</span>
+                      <span>Pool ID</span>
                       <code>{pool.poolId}</code>
                     </div>
                     <div className="meta-row">
-                      <span>📊 Durum</span>
+                      <span>Durum</span>
                       <span className="status-chip">{pool.status}</span>
                     </div>
                   </div>
@@ -190,8 +185,8 @@ export const ValidatorPanel: React.FC<Props> = (_props) => {
                       />
                     </div>
                     <div className="vote-labels">
-                      <span style={{ color: '#4CAF50' }}>✅ {pool.approveVotes} Onayla ({apPct}%)</span>
-                      <span style={{ color: '#FF4444' }}>❌ {pool.rejectVotes} Reddet</span>
+                      <span className="vote-label-approve">{pool.approveVotes} Onayla ({apPct}%)</span>
+                      <span className="vote-label-reject">{pool.rejectVotes} Reddet</span>
                     </div>
                   </div>
 
@@ -202,13 +197,13 @@ export const ValidatorPanel: React.FC<Props> = (_props) => {
                         className="btn btn-approve"
                         onClick={() => handleVote(pool.poolId, true)}
                       >
-                        ✅ Gerçek Fotoğraf
+                        Gerçek Fotoğraf
                       </button>
                       <button
                         className="btn btn-reject"
                         onClick={() => handleVote(pool.poolId, false)}
                       >
-                        ❌ Sahte / AI Üretimi
+                        Sahte / AI Üretimi
                       </button>
                     </div>
                   )}
@@ -222,7 +217,7 @@ export const ValidatorPanel: React.FC<Props> = (_props) => {
 
                   {vs.state === 'voted' && (
                     <div className={`voted-status ${vs.userVote ? 'approved' : 'rejected'}`}>
-                      <span>{vs.userVote ? '✅ Onayladınız' : '❌ Reddettiniz'}</span>
+                      <span>{vs.userVote ? 'Onayladınız' : 'Reddettiniz'}</span>
                       <small>Oy kaydedildi, ödül havuz sonuçlanınca dağıtılacak</small>
                     </div>
                   )}
@@ -235,16 +230,7 @@ export const ValidatorPanel: React.FC<Props> = (_props) => {
         })}
       </div>
 
-      {/* Doğrulayıcı kuralları */}
-      <div className="rules-box">
-        <h4>📜 Doğrulayıcı Kuralları</h4>
-        <ul>
-          <li>Fotoğrafı dikkatlice inceleyin; konum, içerik ve özgünlüğü değerlendirin</li>
-          <li>Çoğunlukla (≥60%) yanlış oy → uyarı puanı alırsınız</li>
-          <li>20 yanlış oy → protokolden kalıcı ban</li>
-          <li>Doğru oy → havuz ödülünün %30'undan pay + seviye puanı</li>
-        </ul>
-      </div>
+
     </div>
   );
 };

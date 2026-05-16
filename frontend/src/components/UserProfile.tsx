@@ -21,7 +21,7 @@ export const UserProfile: React.FC<Props> = ({ address, userRole, setUserRole })
   const [loading,     setLoading]     = useState(true);
   const [showRegister, setShowRegister] = useState(false);
 
-  const { registerCollector, registerValidator, loading: regLoading, error: regError } = useRegister();
+  const { registerCollector, registerValidator, switchRole, loading: regLoading, error: regError } = useRegister();
 
   useEffect(() => { loadUserInfo(); }, [address]);
 
@@ -44,6 +44,13 @@ export const UserProfile: React.FC<Props> = ({ address, userRole, setUserRole })
   const handleRegister = async (role: UserRole) => {
     if (role === 'collector') await registerCollector();
     else                      await registerValidator();
+    await loadUserInfo();
+  };
+
+  const handleSwitchRole = async () => {
+    if (!userRole) return;
+    const newRole = userRole === 'collector' ? 'validator' : 'collector';
+    await switchRole(newRole);
     await loadUserInfo();
   };
 
@@ -92,9 +99,18 @@ export const UserProfile: React.FC<Props> = ({ address, userRole, setUserRole })
         </div>
         <div className="profile-info">
           <span className="profile-address">{shortAddress(address)}</span>
-          <span className="profile-role">
-            {userRole === 'collector' ? 'Toplayıcı' : 'Doğrulayıcı'}
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+            <span className="profile-role" style={{ margin: 0 }}>
+              {userRole === 'collector' ? 'Toplayıcı' : 'Doğrulayıcı'}
+            </span>
+            <button 
+              onClick={handleSwitchRole} 
+              disabled={regLoading}
+              style={{ fontSize: '10px', padding: '2px 6px', background: 'var(--bg-2)', border: '1px solid var(--border)', borderRadius: '4px', cursor: 'pointer', color: 'var(--text)' }}
+            >
+              {regLoading ? '...' : (userRole === 'collector' ? 'Değiştir (VA)' : 'Değiştir (CO)')}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -116,28 +132,21 @@ export const UserProfile: React.FC<Props> = ({ address, userRole, setUserRole })
               style={{ width: `${levelInfo.progress}%`, background: levelColor }}
             />
           </div>
-          <span className="level-progress-text">
-            {levelInfo.currentLevel < 10
-              ? `${levelInfo.remaining} doğru kaldı → Seviye ${levelInfo.currentLevel + 1}`
-              : 'Maksimum Seviye'}
-          </span>
+
         </div>
       </div>
 
       <div className="profile-stats">
         <div className="stat-item">
-          <span className="stat-num">{levelInfo.correctAnswers}</span>
-          <span className="stat-lbl">Doğru</span>
+          <span className="stat-num">{levelInfo.correctAnswers} Doğru</span>
         </div>
         <div className="stat-item">
-          <span className="stat-num" style={{ color: '#f9ab00' }}>{totalEarned}</span>
-          <span className="stat-lbl">$MONECO</span>
+          <span className="stat-num" style={{ color: '#f9ab00' }}>{totalEarned} MONECO</span>
         </div>
         <div className="stat-item">
           <span className="stat-num" style={{ color: '#1e8e3e' }}>
-            {(levelInfo.rewardMultiplier * 100).toFixed(0)}%
+            {(levelInfo.rewardMultiplier * 100).toFixed(0)}% Çarpan
           </span>
-          <span className="stat-lbl">Çarpan</span>
         </div>
       </div>
     </div>

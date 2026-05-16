@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>MONECO Protocol - Dokümantasyon</title>
+  <style>
+    :root {
+      --bg: #07070f;
+      --text: #dde0f0;
+      --text-muted: #7b8098;
+      --accent: #22d3ee;
+      --accent-2: #a78bfa;
+      --accent-3: #34d399;
+      --border: #111220;
+    }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 40px 20px;
+      text-align: center;
+      background: radial-gradient(ellipse at top, #1a1d2e 0%, transparent 70%);
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin: 0 0 10px 0;
+      font-weight: 300;
+      letter-spacing: -0.02em;
+    }
+    .subtitle {
+      color: var(--accent);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+    }
+    main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+    h2 {
+      font-size: 1.8rem;
+      color: var(--accent-2);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+      margin-top: 50px;
+      font-weight: 400;
+    }
+    h3 {
+      font-size: 1.3rem;
+      color: var(--accent-3);
+      margin-top: 30px;
+      font-weight: 400;
+    }
+    p, li {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    .highlight {
+      color: var(--text);
+      font-weight: 500;
+    }
+    .code-block {
+      background: #0c0e1c;
+      border: 1px solid var(--border);
+      padding: 15px;
+      border-radius: 8px;
+      font-family: monospace;
+      color: var(--accent);
+      line-height: 1.9;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="subtitle">Proof of Image Protocol</div>
+    <h1>MONECO Dokümantasyonu</h1>
+    <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">Merkeziyetsizliğin doğacı manifestosu. Çevreyi koruyanları ödüllendiren, ekolojiye destek olan Web3 kültürü.</p>
+  </header>
+  
+  <main>
+    <h2>1. Sisteme Genel Bakış</h2>
+    <p>MONECO, Monad ağı üzerinde çalışan ve kendi tokeni olan <span class="highlight">$MONECO (100 Milyon Arz)</span> ile çevreyi koruyanları ödüllendiren bir sistemdir. Harita üzerinde (Mapbox GL JS kullanılarak) işaretlenmiş çöp konteynerlarının durumunu fotoğraflayan <strong>Toplayıcılar</strong> ve bu fotoğrafları onaylayan <strong>Doğrulayıcılar</strong>dan oluşur.</p>
+
+    <h2>2. Roller ve Sorumluluklar</h2>
+    
+    <h3>Toplayıcı (Collector)</h3>
+    <ul>
+      <li>Toplayıcı olmak için sisteme <span class="highlight">1000 $MONECO stake</span> edilmesi zorunludur.</li>
+      <li>Harita üzerindeki noktalara giderek güncel durumu fotoğraflar ve sisteme yükler.</li>
+      <li>Eğer yüklenen fotoğraf geçerli ise (gerçek ve o konumda çekilmişse), açılan <strong>Image Pool (Fotoğraf Havuzu)</strong> üzerinden ödül kazanır.</li>
+      <li>Eğer fotoğraf sahte (AI ile üretilmiş vb.) ise veya hile tespit edilirse, stake ettiği tokenlar <span class="highlight">yanar (slash)</span>.</li>
+    </ul>
+
+    <h3>Doğrulayıcı (Validator)</h3>
+    <ul>
+      <li>Havuzdaki (Image Pool) fotoğrafların gerçekliğini oylar. (Gerçek mi, Sahte mi?)</li>
+      <li>Doğrulayıcıların kararı ve AI araçlarının ortak teyidi ile sonuç belirlenir.</li>
+      <li>Eğer fotoğraf gerçek çıkar ve doğrulayıcı doğru oy verdiyse ödül kazanır.</li>
+      <li>Eğer doğrulayıcılar rastgele veya sürekli olarak yanlış oy verirse <span class="highlight">protokolden kalıcı olarak atılırlar (ban)</span>.</li>
+    </ul>
+
+    <h2>3. Ödül Mekanizması ve Havuz Sistemi</h2>
+    <p>Fotoğraf yükleme işlemi sonrasında sistemde bulunan bir <strong>Agent</strong> ön kontrol yapar. Geçerli ise o bölge (örneğin Çanakkale Biga Belediyesi konteynerleri) için bir ödül havuzu açılır.</p>
+    <ul>
+      <li>Havuzun ödülü bölgenin zorluğuna göre değişir. Örneğin havuzda <strong>100 MONECO</strong> varsa:</li>
+      <li>Eğer geçerli fotoğrafı sadece 1 kişi yüklerse 100 MONECO'nun tamamını alır.</li>
+      <li>Eğer 100 kişi yüklerse kişi başı 1 MONECO düşer.</li>
+      <li>Bu sistem, gidilmesi zor (izbe) ve verisi az bölgelerde fotoğraf çekilmesini teşvik eder.</li>
+    </ul>
+    
+    <p>Haritada bölgelerin renk kodları (veriye göre):</p>
+    <ul>
+      <li><span style="color: #ff4444;">Kırmızı:</span> En çok fotoğraf çekilen bölgeler (düşük ödül).</li>
+      <li><span style="color: #ff9800;">Turuncu:</span> Ortalama bölgeler.</li>
+      <li><span style="color: #4CAF50;">Yeşil:</span> İzbe, en az fotoğraf çekilen yerler (yüksek ödül).</li>
+    </ul>
+
+    <h2>4. Seviye (Level) Sistemi</h2>
+    <p>Protokol, kullanıcıların performansına göre onlara 1'den 10'a kadar seviye verir. Doğru cevaplar/geçerli işlemler yaptıkça seviye artar:</p>
+    <div class="code-block">
+      Seviye Atlama Eşikleri (Doğru İşlem Sayısı):<br>
+      - 50 &nbsp;-> Seviye 2<br>
+      - 100 -> Seviye 3<br>
+      - 200 -> Seviye 4<br>
+      - 400 -> Seviye 5<br>
+      - 800 -> Seviye 6<br>
+      - 1600 -> Seviye 7<br>
+      - 3200 -> Seviye 8 ...
+    </div>
+    <p>Her seviye artışında, kazanılan <strong>ödül oranları doğru orantılı olarak %5 artar</strong>.</p>
+
+    <h2>5. Felsefe ve Manifestomuz</h2>
+    <p>Bu proje, hem teknolojik hem de etik anlamda bir kültür oluşturmayı amaçlar. Ekolojiye destek olmak, çevre koruma eylemlerini oyunlaştırarak teşvik etmek ve bunu tamamen merkeziyetsiz bir altyapı ile sağlamak MONECO'nun temelidir. Bu, <span class="highlight">merkeziyetsizliğin doğacı manifestosudur.</span></p>
+  </main>
+</body>
+</html>

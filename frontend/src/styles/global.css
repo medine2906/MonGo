@@ -81,8 +81,8 @@ a:hover { text-decoration: underline; }
 .header-nav a:hover { background: var(--bg-2); color: var(--text); text-decoration: none; }
 
 /* ── App Body ────────────────────────────────────────────── */
-.app-body { flex: 1; position: relative; overflow: hidden; }
-.map-full { position: absolute; inset: 0; }
+.app-body { flex: 1; position: relative; overflow: hidden; min-height: 0; }
+.map-full { position: absolute; inset: 0; z-index: 1; }
 
 /* ── Floating sidebar ────────────────────────────────────── */
 .floating-sidebar {
@@ -94,6 +94,7 @@ a:hover { text-decoration: underline; }
 }
 .floating-sidebar > * { pointer-events: all; }
 .floating-sidebar::-webkit-scrollbar { display: none; }
+.floating-sidebar::-webkit-scrollbar-thumb { display: none; }
 
 /* ── Floating panel ──────────────────────────────────────── */
 .floating-panel {
@@ -102,6 +103,8 @@ a:hover { text-decoration: underline; }
   background: var(--white); border-radius: var(--radius-lg);
   box-shadow: var(--shadow-3); overflow-y: auto;
 }
+.floating-panel::-webkit-scrollbar { width: 4px; }
+.floating-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
 /* ── Tab navigation ──────────────────────────────────────── */
 .tab-nav {
@@ -134,7 +137,8 @@ a:hover { text-decoration: underline; }
   background: var(--white); border-radius: var(--radius-lg);
   box-shadow: var(--shadow-1); padding: 16px;
 }
-.sidebar-tip h4 {
+.sidebar-tip h4,
+.tip-title {
   font-size: 10px; color: var(--text-3); margin-bottom: 10px;
   font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
 }
@@ -614,9 +618,53 @@ a:hover { text-decoration: underline; }
 .error-text { color: var(--red); font-size: 12px; margin-top: 6px; }
 
 @media (max-width: 768px) {
-  .floating-sidebar { width: calc(100% - 24px); max-height: 45vh; }
-  .floating-panel   { top: auto; right: 0; left: 0; bottom: 0; width: 100%; border-radius: var(--radius-lg) var(--radius-lg) 0 0; max-height: 55vh; }
-  .map-filters { left: 12px; top: auto; bottom: 12px; transform: none; }
+  /* On mobile, stack map + panels vertically */
+  .app-body {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .map-full {
+    position: relative !important;
+    inset: auto !important;
+    flex: 0 0 45vh;
+    min-height: 200px;
+  }
+  .floating-sidebar {
+    position: relative !important;
+    top: auto !important; left: auto !important;
+    width: 100% !important;
+    max-height: none !important;
+    overflow-y: visible;
+    flex-shrink: 0;
+    padding: 8px 12px;
+    background: var(--bg-1);
+    border-top: 1px solid var(--border);
+    gap: 8px;
+    z-index: 10;
+    /* scrollable area for sidebar content */
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: calc(55vh - 16px) !important;
+  }
+  .floating-panel {
+    position: relative !important;
+    top: auto !important; right: auto !important;
+    width: 100% !important;
+    max-height: none !important;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    box-shadow: 0 -2px 12px rgba(0,0,0,.08);
+    overflow-y: auto;
+    flex-shrink: 0;
+    max-height: 50vh !important;
+  }
+  .map-filters {
+    left: 12px; top: 8px; transform: none;
+    bottom: auto;
+  }
+  .map-legend {
+    bottom: 8px; right: 8px;
+  }
   .map-stats-overlay { display: none; }
   .landing-hero h1 { font-size: 32px; }
   .landing-tokenomics { padding: 48px 20px 56px; }

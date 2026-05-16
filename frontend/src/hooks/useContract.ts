@@ -157,7 +157,47 @@ export function useRegister() {
     }
   }, []);
 
-  return { registerCollector, registerValidator, loading, error };
+  const switchRole = useCallback(async (newRole: 'collector' | 'validator') => {
+    setLoading(true); setError(null);
+    try {
+      if (isDemoMode()) {
+        const signer  = await getSigner();
+        const address = await signer.getAddress();
+        await new Promise(r => setTimeout(r, 800));
+        const currentUser = getDemoUser(address);
+        if (currentUser) {
+          currentUser.role = newRole === 'collector' ? 1 : 2;
+          setDemoUser(address, currentUser);
+        }
+        return;
+      }
+      
+      const signer   = await getSigner();
+      const protocol = getProtocolContract(signer);
+      
+      if (newRole === 'collector') {
+        const token    = getTokenContract(signer);
+        const stake    = ethers.parseEther('1000');
+        const allowance = await token.allowance(await signer.getAddress(), CONTRACT_ADDRESSES.protocol);
+        if (allowance < stake) {
+          const tx = await token.approve(CONTRACT_ADDRESSES.protocol, stake);
+          await tx.wait();
+        }
+        const tx = await protocol.registerAsCollector();
+        await tx.wait();
+      } else {
+        const tx = await protocol.registerAsValidator();
+        await tx.wait();
+      }
+    } catch (e: unknown) {
+      setError((e as Error).message);
+      throw e;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  return { registerCollector, registerValidator, switchRole, loading, error };
 }
 
 // ── Kullanıcı Bilgisi ────────────────────────────────────────

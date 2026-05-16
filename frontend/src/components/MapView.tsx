@@ -69,17 +69,14 @@ export const MapView: React.FC<Props> = ({ onLocationSelect, selectedLocation })
           </div>
           <p class="popup-name">${loc.locationName}</p>
           <div class="popup-stats">
-            <div><span>📤 Yükleme</span><b>${loc.uploadCount}</b></div>
-            <div><span>💰 Ödül</span><b style="color:#FFD700">${loc.reward} $MONECO</b></div>
-            <div><span>📍 Zorluk</span><b>${'⭐'.repeat(loc.difficulty)}</b></div>
-            <div><span>👤 Kişi başı</span><b>${loc.uploadCount > 0 ? (loc.reward / loc.uploadCount).toFixed(1) : loc.reward} $MONECO</b></div>
+            <div><span>Ödül</span><b style="color:#f9ab00">${loc.reward} $MONECO</b></div>
           </div>
           <button id="sel-${loc.id}" style="
             margin-top:8px;width:100%;padding:8px 12px;border-radius:20px;
             background:#1a73e8;border:none;
             color:#fff;cursor:pointer;font-weight:500;font-size:12px;
             font-family:inherit;
-          ">Konum Seç →</button>
+          ">Konum Seç</button>
         </div>`;
 
       marker.bindPopup(popupHtml, { maxWidth: 240, className: 'leaflet-custom-popup' });
@@ -145,21 +142,7 @@ export const MapView: React.FC<Props> = ({ onLocationSelect, selectedLocation })
       {/* Harita */}
       <div ref={mapContainer} style={{ width: '100%', height: '100%' }} />
 
-      {/* Lejant */}
-      <div className="map-legend">
-        <h4>Bölge Yoğunluğu</h4>
-        <div className="legend-row"><span className="legend-dot" style={{ background: MARKER_COLORS.green  }} /> İzbe — Yüksek Ödül</div>
-        <div className="legend-row"><span className="legend-dot" style={{ background: MARKER_COLORS.orange }} /> Ortalama</div>
-        <div className="legend-row"><span className="legend-dot" style={{ background: MARKER_COLORS.red    }} /> Popüler — Düşük Ödül</div>
-      </div>
 
-      {/* İstatistik */}
-      <div className="map-stats-overlay">
-        <span>📍 {locations.length} konum</span>
-        <span style={{ color: MARKER_COLORS.green  }}>🟢 {locations.filter(l => l.markerColor === 'green' ).length}</span>
-        <span style={{ color: MARKER_COLORS.orange }}>🟠 {locations.filter(l => l.markerColor === 'orange').length}</span>
-        <span style={{ color: MARKER_COLORS.red    }}>🔴 {locations.filter(l => l.markerColor === 'red'   ).length}</span>
-      </div>
     </div>
   );
 };
